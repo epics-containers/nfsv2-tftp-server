@@ -14,7 +14,7 @@
  */
 
 #include "nfsd.h"
-
+#include "time.h"
 #ifdef HAVE_SYSLOG_H
 #include <syslog.h>
 #else
