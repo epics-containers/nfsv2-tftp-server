@@ -1,1 +1,1 @@
-10.0.2.100:/var/nfs/public /mnt/nfs-public nfs rw 0 0
+10.0.2.100:/mnt/nfs_share /mnt/nfs-public nfs rw 0 0
