@@ -3,37 +3,39 @@ EXPOSE 2049
 # EXPOSE 111
 # CMD ["/bin/bash"]
 ADD serverfiles /nfsbuild
-RUN mkdir /mnt/nfs_share; mkdir /mnt/nfs-public
 RUN mkdir /var/state/; mkdir /var/state/nfs; touch /var/state/nfs/devtab
 RUN cd /nfsbuild/debian; chmod +x init postinst preinst rules ugidd.init ugidd.preinst 
 RUN apt update -y; apt install gcc make -y
 RUN cd nfsbuild; cat debian/jamesbuild.cfg | ./BUILD
 RUN cd /nfsbuild; make install;
-RUN mkdir -p /mnt/nfs_share; chown -R nobody:nogroup /mnt/nfs_share; chmod 777 /mnt/nfs_share;
+RUN mkdir -p /mnt/nfs_server; chown -R nobody:nogroup /mnt/nfs_server; chmod 777 /mnt/nfs_server;
+RUN mkdir -p /mnt/nfs_client; chown -R nobody:nogroup /mnt/nfs_client; chmod 777 /mnt/nfs_client;
+ADD moby.txt /mnt/nfs_server
 RUN mkdir /run/sendsigs.omit.d; touch /run/sendsigs.omit.d/rpcbind
 ADD fstab /etc
 ADD exports /etc
+ADD start /
+RUN chmod +x /start
 RUN touch /etc/services
 #note: changing these ports to something else will cause the nfs-user-server start command to not work!
 RUN echo sunrpc          111/tcp         rpcbind portmap >> /etc/services
 RUN echo sunrpc          111/udp         rpcbind portmap >> /etc/services
-RUN cp /nfsbuild/debian/init /etc/init.d/nfs-user-server
+RUN cp /nfsbuild/debian/initr /etc/init.d/nfs-user-server
 RUN apt install rpcbind -y;
-# RUN bash /nfsbuild/debian/addaddresses.sh
+# RUN apt install nfs-common -y
+
+
+#if you run the pod with --privileged flag you get additional errors trying to mount
+#mount.nfs is in /sbin
+#run mount $(hostname -i):/mnt/nfs_server -V; ls /mnt/nfs-public after starting services in privileged mode, gives some errors.
+
+# Do i have to specify nfsversion in mount command?
 # RUN echo "the \n character doesnt work"
-# RUN service rpcbind start
-# RUN /etc/init.d/nfs-user-server start
-# ADD startservice.sh /
-# RUN bash /startservice.sh
-#cannot bind on tcp udp etc... maybe i should fix that 
 
 # RUN echo remember to check the -r flag for rpc.mountd and rpc.nfsd
-# RUN echo run rpc.nfsd --foreground and it will give you error message about not being able to bind UDP/TCP socket to given address etc.
 # RUN echo remember you are running the --re-export flag in initr
 #Using the --re-export gives a permission denied error.
-#running rpc.nfsd --foreground -P DIFFERENT_PORT_THAN_2049 removes the address already in use error. MAYBE THIS IS WHERE WE NEED THE -R flag
-#but no_subtree_check unknown keyword error remains.
-#Doesnt seem like the no_subtree_check keyword is defined anywhere in this file system so makes sense.
+#no no_subtree_check keyword
 #The address already in use error could be because I already have rpc.nfsd started in the background and the foreground process is separate.
 
 
@@ -47,7 +49,7 @@ RUN apt install rpcbind -y;
 # RUN /etc/init.d/nfs-user-server start
 # RUN service rpcbind start
 # CMD ["/bin/bash"]
-# showmount has RPC mapper failure RPC unable to send, but maybe we don't need it
+# showmount requires an address to work e.g. showmount localhost
 
 
 #VERY IMPORTANT: SEE THIS TRICK https://wiki.openvz.org/NFS_server_inside_container#User-space_NFS_server
@@ -67,11 +69,6 @@ RUN apt install rpcbind -y;
 #Running /usr/sbin/rpc.nfsd etc gives "Cannot register service: RPC: Unable to receive; errno = Connection refused"
 #rpcinfo -> can't contact rpcbind: RPC: Remote system error - No such file or directory.
 
-# RUN mkdir /var/nfs; mkdir /var/nfs/public; chmod 777 /var/nfs/public
-# RUN mkdir /mnt/nfs-public
-# RUN echo hey there hey there >> /mnt/nfs-public/hey.txt
-# ADD exports /etc
-# ADD fstab /etc
 # RUN apt install rpcbind -y; mv /rpcbindwpath /etc/init.d/rpcbind
 #https://www.youtube.com/watch?v=hC7QNtID4-4
 #https://askubuntu.com/questions/771473/mount-cant-find-device-in-etc-fstab
