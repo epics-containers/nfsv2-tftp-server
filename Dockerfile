@@ -21,8 +21,8 @@ RUN touch /etc/services
 RUN echo sunrpc          111/tcp         rpcbind portmap >> /etc/services
 RUN echo sunrpc          111/udp         rpcbind portmap >> /etc/services
 RUN cp /nfsbuild/debian/initr /etc/init.d/nfs-user-server
-RUN apt install rpcbind -y;
-# RUN apt install nfs-common -y
+# RUN apt install rpcbind -y;
+RUN apt install nfs-common -y
 
 
 #if you run the pod with --privileged flag you get additional errors trying to mount
