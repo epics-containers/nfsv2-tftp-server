@@ -50,6 +50,7 @@
  */
 
 #include <assert.h>
+#include <time.h>
 #include "nfsd.h"
 #include "rpcmisc.h"
 #include "signals.h"

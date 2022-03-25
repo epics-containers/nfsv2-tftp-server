@@ -27,6 +27,7 @@
 #include <netinet/in.h>
 #include "rpcmisc.h"
 #include "logging.h"
+#include <time.h>
 
 /* Another undefined function in RPC */
 extern SVCXPRT *svcfd_create(int sock, u_int ssize, u_int rsize);

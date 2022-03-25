@@ -20,7 +20,7 @@ start)
 	printf "Starting $DESC:"
 	start-stop-daemon --start --oknodo --quiet --exec /usr/sbin/rpc.nfsd -- -r
 	printf " nfsd"
-	start-stop-daemon --start --oknodo --quiet --exec /usr/sbin/rpc.mountd -- -r
+	start-stop-daemon --start --oknodo --quiet --exec /usr/sbin/rpc.mountd -- -r -P 2050
 	printf " mountd"
 	printf ".\n"
 	;;

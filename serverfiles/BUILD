@@ -488,7 +488,7 @@ if ! $batch; then
 	echo -n "Please press return to continue "; read foo
 fi
 
-sh configure
+sh /nfsbuild/configure
 if [ $? -ne 0 ]; then
   echo
   echo

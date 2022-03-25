@@ -1,3 +1,4 @@
+mv /moby.txt /exports/nfs_server
 bash /nfsbuild/debian/addaddresses.sh
 service rpcbind start
 bash /etc/init.d/nfs-user-server start

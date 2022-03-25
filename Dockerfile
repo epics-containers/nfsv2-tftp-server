@@ -3,14 +3,15 @@ EXPOSE 2049
 # EXPOSE 111
 # CMD ["/bin/bash"]
 ADD serverfiles /nfsbuild
+#Had to edit the line sh /configure in BUILD to sh /nfsbuild/configure...
 RUN mkdir /var/state/; mkdir /var/state/nfs; touch /var/state/nfs/devtab
 RUN cd /nfsbuild/debian; chmod +x init postinst preinst rules ugidd.init ugidd.preinst 
 RUN apt update -y; apt install gcc make -y
-RUN cd nfsbuild; cat debian/jamesbuild.cfg | ./BUILD
+RUN cd nfsbuild; cat debian/jamesbuild2.cfg | ./BUILD
 RUN cd /nfsbuild; make install;
-RUN mkdir -p /mnt/nfs_server; chown -R nobody:nogroup /mnt/nfs_server; chmod 777 /mnt/nfs_server;
+RUN mkdir -p /exports/nfs_server; chown -R nobody:nogroup /exports/nfs_server; chmod 777 /exports/nfs_server;
 RUN mkdir -p /mnt/nfs_client; chown -R nobody:nogroup /mnt/nfs_client; chmod 777 /mnt/nfs_client;
-ADD moby.txt /mnt/nfs_server
+ADD moby.txt /
 RUN mkdir /run/sendsigs.omit.d; touch /run/sendsigs.omit.d/rpcbind
 ADD fstab /etc
 ADD exports /etc
@@ -23,7 +24,13 @@ RUN echo sunrpc          111/udp         rpcbind portmap >> /etc/services
 RUN cp /nfsbuild/debian/initr /etc/init.d/nfs-user-server
 # RUN apt install rpcbind -y;
 RUN apt install nfs-common -y
+#remember i am now using jamesbuild2.cfg instead of jamesbuild.cfg...
+#secure flag: server won't respond to TCP requests at ports > 1024
 
+
+#remember to use the -e flag for showmount to see exports
+
+#include <time.h> in fh.c rpcmisc.c and logging.c
 
 #if you run the pod with --privileged flag you get additional errors trying to mount
 #mount.nfs is in /sbin
@@ -34,6 +41,7 @@ RUN apt install nfs-common -y
 
 # RUN echo remember to check the -r flag for rpc.mountd and rpc.nfsd
 # RUN echo remember you are running the --re-export flag in initr
+#set a port flag for the rpc.mountd service too
 #Using the --re-export gives a permission denied error.
 #no no_subtree_check keyword
 #The address already in use error could be because I already have rpc.nfsd started in the background and the foreground process is separate.
