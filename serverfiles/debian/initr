@@ -18,9 +18,9 @@ test -x /usr/sbin/rpc.nfsd -a -f /etc/exports || exit 0
 case "$1" in
 start)
 	printf "Starting $DESC:"
-	start-stop-daemon --start --oknodo --quiet --exec /usr/sbin/rpc.nfsd -- -r
+	start-stop-daemon --start --oknodo --quiet --exec /usr/sbin/rpc.nfsd -- -r -P 2049
 	printf " nfsd"
-	start-stop-daemon --start --oknodo --quiet --exec /usr/sbin/rpc.mountd -- -r -P 2050
+	start-stop-daemon --start --oknodo --quiet --exec /usr/sbin/rpc.mountd -- -r -P 20048
 	printf " mountd"
 	printf ".\n"
 	;;

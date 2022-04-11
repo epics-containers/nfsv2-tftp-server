@@ -1,4 +1,5 @@
 FROM debian:jessie
+# FROM ubuntu
 EXPOSE 2049
 # EXPOSE 111
 # CMD ["/bin/bash"]
@@ -7,23 +8,42 @@ ADD serverfiles /nfsbuild
 RUN mkdir /var/state/; mkdir /var/state/nfs; touch /var/state/nfs/devtab
 RUN cd /nfsbuild/debian; chmod +x init postinst preinst rules ugidd.init ugidd.preinst 
 RUN apt update -y; apt install gcc make -y
+
+#trying this to setup logging..
+RUN apt install rsyslog -y 
+
+
 RUN cd nfsbuild; cat debian/jamesbuild2.cfg | ./BUILD
 RUN cd /nfsbuild; make install;
 RUN mkdir -p /exports/nfs_server; chown -R nobody:nogroup /exports/nfs_server; chmod 777 /exports/nfs_server;
 RUN mkdir -p /mnt/nfs_client; chown -R nobody:nogroup /mnt/nfs_client; chmod 777 /mnt/nfs_client;
 ADD moby.txt /
+ADD sizefiles /sizefiles
 RUN mkdir /run/sendsigs.omit.d; touch /run/sendsigs.omit.d/rpcbind
 ADD fstab /etc
 ADD exports /etc
 ADD start /
+ADD addexport /
+ADD exporttohosts / 
+ADD restarts / 
+ADD restart / 
+ADD restart65s /
 RUN chmod +x /start
+RUN chmod +x /restart65s; chmod +x /restarts; chmod +x /restart
+RUN chmod +x /addexport; chmod +x exporttohosts
 RUN touch /etc/services
 #note: changing these ports to something else will cause the nfs-user-server start command to not work!
-RUN echo sunrpc          111/tcp         rpcbind portmap >> /etc/services
-RUN echo sunrpc          111/udp         rpcbind portmap >> /etc/services
-RUN cp /nfsbuild/debian/initr /etc/init.d/nfs-user-server
+
+#remove "nfs" alias from these lines if something breaks..
+RUN echo sunrpc          111/tcp         rpcbind portmap nfs>> /etc/services
+RUN echo sunrpc          111/udp         rpcbind portmap>> /etc/services
+RUN echo nfsd          2049/tcp         rpc.nfsd nfs>> /etc/services
+RUN echo nfsd          2049/tcp         rpc.nfsd nfs>> /etc/services
+RUN echo mountd          20048/tcp         rpc.mountd nfs>> /etc/services
+RUN echo mountd          20048/tcp         rpc.mountd nfs>> /etc/services
 # RUN apt install rpcbind -y;
-RUN apt install nfs-common -y
+RUN cp /nfsbuild/debian/initr /etc/init.d/nfs-user-server
+RUN apt install nfs-common net-tools -y
 #remember i am now using jamesbuild2.cfg instead of jamesbuild.cfg...
 #secure flag: server won't respond to TCP requests at ports > 1024
 
