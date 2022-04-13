@@ -1,6 +1,0 @@
-mv /moby.txt /exports/nfs_server
-mv /sizefiles /exports/nfs_server
-service rsyslog start
-bash /nfsbuild/debian/addaddresses.sh
-service rpcbind start
-bash /etc/init.d/nfs-user-server start
