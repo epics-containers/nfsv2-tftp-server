@@ -1,0 +1,19 @@
+cd "../.."
+
+# Device initialisation
+# ---------------------
+
+dbLoadDatabase "dbd/vme.dbd"
+vme_registerRecordDeviceDriver(pdbbase)
+
+ipacAddHy8002("8,2")
+
+Hy8401ipConfigure(80, 0, 0, 193, 0, 0, 0, 4, 0, 1, 1, 0)
+
+Hy8402ipConfigure(82, 0, 2, 194, 0, 0, 13, 0)
+initHy8402ipAsyn("IP82", 82)
+
+# Final ioc initialisation
+# ------------------------
+dbLoadRecords "db/vme.db"
+iocInit

@@ -1,0 +1,4 @@
+epicsEnvSet("IOC","iocsampleIOC")
+epicsEnvSet("TOP","/home/hqv85942/ioctest")
+epicsEnvSet("SUPPORT","/scratch/EPICS/R7.0.6-RTEMS-5")
+epicsEnvSet("EPICS_BASE","/scratch/EPICS/R7.0.6-RTEMS-5")
