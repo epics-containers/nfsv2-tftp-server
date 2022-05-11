@@ -1,6 +1,7 @@
 # FROM debian:jessie
 # debian jessie's package manager uses an old version of go that doesn't use the go mod command..
 FROM debian:11.3
+# FROM ubuntu:20.04
 #i think debian:11.3 has a sufficiently up to date version of golang...
 # EXPOSE 2049
 CMD ["/bin/bash"]
@@ -8,11 +9,12 @@ ADD serverfiles /nfsbuild
 ADD buildoptions.cfg /nfsbuild
 #Had to edit the line sh /configure in BUILD to sh /nfsbuild/configure...
 RUN mkdir /var/state/; mkdir /var/state/nfs; touch /var/state/nfs/devtab
-RUN apt update -y; apt install golang gcc make wget rsyslog nfs-common dnsmasq net-tools -y
+RUN apt update -y; DEBIAN_FRONTEND=noninteractive apt install golang gcc make wget rsyslog nfs-common dnsmasq net-tools -y
 RUN cd nfsbuild; cat buildoptions.cfg | ./BUILD
 RUN cd /nfsbuild; make install;
-RUN mkdir -p /exports/nfs_server; chown -R nobody:nogroup /exports/nfs_server; chmod 777 /exports/nfs_server;
-RUN mkdir -p /mnt/nfs_client; chown -R nobody:nogroup /mnt/nfs_client; chmod 777 /mnt/nfs_client;
+RUN mkdir -p /exports/nfs_server; chown -R nobody:nogroup /exports/nfs_server; chmod -R 777 /exports/nfs_server;
+RUN mkdir -p /exports/server2; chown -R nobody:nogroup /exports/server2; chmod -R 777 /exports/server2;
+# RUN mkdir -p /mnt/nfs_client; chown -R nobody:nogroup /mnt/nfs_client; chmod 777 /mnt/nfs_client;
 ADD exportedfiles /exports/nfs_server
 RUN mkdir /run/sendsigs.omit.d; touch /run/sendsigs.omit.d/rpcbind
 # RUN touch /etc/exports

@@ -3,6 +3,7 @@ cd "../.."
 # Device initialisation
 # ---------------------
 
+epicsEnvSet "nfsStBlksize", "1024"
 dbLoadDatabase "dbd/vme.dbd"
 vme_registerRecordDeviceDriver(pdbbase)
 

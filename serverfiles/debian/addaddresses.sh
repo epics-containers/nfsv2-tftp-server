@@ -8,6 +8,7 @@
 
 # echo "/exports/nfs_server 10.0.0.0/255.0.0.0(rw,sync,no_root_squash,insecure)" >> /etc/exports
 echo "/exports/nfs_server 0.0.0.0/0.0.0.0(rw,sync,no_root_squash,insecure)" >> /etc/exports
+echo "/exports/server2 0.0.0.0/0.0.0.0(rw,sync,no_root_squash,insecure)" >> /etc/exports
 
 # echo "/exports/nfs_server 172.23.169.20(rw,sync,no_root_squash,insecure)" >> /etc/exports
 # echo "/exports/nfs_server 10.96.185.74(rw,sync,no_root_squash,insecure)">>etc/exports 
