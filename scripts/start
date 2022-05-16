@@ -2,17 +2,21 @@
 # mv /sizefiles /exports/nfs_server
 sed -i '/imklog/s/^/#/' /etc/rsyslog.conf
 service rsyslog start
-bash /nfsbuild/debian/addaddresses.sh
-service rpcbind start
-bash /etc/init.d/nfs-user-server start
-# cd /exports/nfs_server; /tftp s -w --sp
+
 
 mkdir /tftpboot
 chown -R nobody:nogroup /tftpboot
 chmod -R 777 /tftpboot
-cp -a /exports/nfs_server/. /tftpboot/
-echo "test test test" >> /tftpboot/file
-dnsmasq -p 0 --enable-tftp --tftp-single-port --tftp-root /tftpboot --log-facility=/var/log/syslog
-# dnsmasq --enable-tftp --tftp-single-port --tftp-root /tftpboot --log-facility=/var/log/syslog
-# service dnsmasq start
 
+
+bash /nfsbuild/debian/addaddresses.sh
+echo "/autosave 0.0.0.0/0.0.0.0(rw,sync,no_root_squash,insecure)" >> /etc/exports
+#Check if env_variable for IOC_NAME exists, if it does, link to it
+[ ! -z "${APP_NAME}" ] && echo "/iocs/${APP_NAME}/current 0.0.0.0/0.0.0.0(rw,sync,no_root_squash,insecure)" >> /etc/exports && \
+ln -s /iocs/${APP_NAME}/current/bin/RTEMS-beatnik/${IOC_NAME}.boot /tftpboot/bootfile
+#need to add logic to delete if exists I guess... 
+service rpcbind start
+bash /etc/init.d/nfs-user-server start
+# cd /exports/nfs_server; /tftp s -w --sp
+
+# dnsmasq -p 0 --enable-tftp --tftp-single-port --tftp-root /tftpboot --log-facility=/var/log/syslog
