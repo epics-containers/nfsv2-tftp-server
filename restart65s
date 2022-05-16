@@ -1,0 +1,5 @@
+service rpcbind stop
+bash /etc/init.d/nfs-user-server stop
+sleep 65
+rpcbind -w
+bash /etc/init.d/nfs-user-server start

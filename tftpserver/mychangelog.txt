@@ -1,0 +1,5 @@
+Removed references to outside github, removed require line from go.mod
+instead of downloading pack.ag/tftp we are directly importing tftpserver/go-tftp into
+main.go. Also for conn.go had to change an import line from pack.ag/tftp/netascii or something like that.
+
+Doing all this to allow myself to make local changes so I can create a logging file.
