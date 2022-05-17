@@ -34,14 +34,15 @@ RUN mkdir /autosave; chown -R 777 /autosave
 #everything below here is for TFTP
 #####################
 
-WORKDIR /tftp-http-proxy
-RUN apt update; apt install git python3 golang -y
-RUN go get -u github.com/pin/tftp
-RUN git clone https://github.com/bwalex/tftp-http-proxy . 
-ADD singleportpatch . 
-RUN patch -u main.go singleportpatch
-RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -o tftp
-ENTRYPOINT ["/bin/sh", "-c", "python3 -m http.server -b 127.0.0.1 80 --directory / &\
-/tftp-http-proxy/tftp -http-append-path && sh /start && sh /checkforexport"]
+# ENTRYPOINT ["/bin/sh","-c", "sh /start && while true;do sleep infinity; done"]
+ENTRYPOINT ["/bin/sh","-c", "sh /start & sh /checkforexport"]
 
-# ENTRYPOINT ["/bin/sh","-c", "sh /start && while true; do continue; sleep 10;done"]
+# WORKDIR /tftp-http-proxy
+# RUN apt update; apt install git python3 golang -y
+# RUN go get -u github.com/pin/tftp
+# RUN git clone https://github.com/bwalex/tftp-http-proxy . 
+# ADD singleportpatch . 
+# RUN patch -u main.go singleportpatch
+# RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -o tftp
+# ENTRYPOINT ["/bin/sh", "-c", "python3 -m http.server -b 127.0.0.1 80 --directory / &\
+# /tftp-http-proxy/tftp -http-append-path && sh /start && sh /checkforexport"]
