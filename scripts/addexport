@@ -1,10 +1,5 @@
 #!/bin/sh
-#Adds address to export list, reboots server, waiting > 60s to allow the nfsd port to be 
-#released from TIME_WAIT state.
 
-service rpcbind stop
-bash /etc/init.d/nfs-user-server stop
-echo "/exports/nfs_server $1(rw,sync,no_root_squash,insecure)" >> /etc/exports
-sleep 65
-rpcbind -w
-bash /etc/init.d/nfs-user-server start
+echo "$1 0.0.0.0/0.0.0.0(rw,sync,no_root_squash,insecure)" >> /etc/exports
+echo "New export added: $1"
+/restarts 1

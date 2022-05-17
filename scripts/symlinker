@@ -1,0 +1,20 @@
+#!/bin/sh
+#call with argument being the directory of the ioc you want to link e.g. bash /symlinker /ioc1
+#DEPRECATED
+[ -d /exports/nfs_server/ioc ] && echo "source folder path exists, deleting" && rm -rf /exports/nfs_server/ioc
+[ -f /exports/nfs_server/ioc ] && echo "file exists in source folder path, deleting" && rm /exports/nfs_server/ioc
+[ -L /exports/nfs_server/ioc ] && echo "source folder link exists, deleting" && rm /exports/nfs_server/ioc
+[ -L /tftpboot/bootfile ] && echo "bootfile link exists, deleting" && rm /tftpboot/bootfile
+ 
+ 
+[ -f $1/iocBoot/iochey/st.cmd ] && \
+[ -f $1/bin/RTEMS-beatnik/hey.boot ] && \
+ln -s $1 /exports/nfs_server/ioc && echo "new source folder $1 linked" && \
+ln -s $1/bin/RTEMS-beatnik/hey.boot /tftpboot/bootfile && echo "new bootfile $1/bin/RTEMS-beatnik/hey.boot linked" && \
+bash /etc/init.d/nfs-user-server restart && echo "Restarting server, if this is a bad idea I should rethink how script works"
+
+#This only works if you name the ioc hey
+#it may also be dangerous to do things this way, because we could change the directory served 
+#while the IOC is running and it may fail trying
+#to load a record that no longer exists.
+#also have to restart server (use /restarts script) when client tries to remount.

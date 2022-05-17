@@ -1,0 +1,2 @@
+while true; do sleep 15; [ -f /iocs/export_to_add ] && [ -d `cat /iocs/export_to_add` ] && \
+/addexport `cat /iocs/export_to_add`; rm /iocs/export_to_add; done

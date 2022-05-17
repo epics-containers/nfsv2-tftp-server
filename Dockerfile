@@ -19,12 +19,14 @@ ADD exportedfiles /exports/nfs_server
 RUN mkdir /run/sendsigs.omit.d; touch /run/sendsigs.omit.d/rpcbind
 # RUN touch /etc/exports
 ADD scripts /
-RUN chmod +x /restarts /addexport /start /init_with_ports /udppacketcounter
+RUN chmod +x /restarts /addexport /start /init_with_ports /udppacketcounter /checkforexport
 # RUN touch /etc/services
 # RUN echo sunrpc          111/tcp         rpcbind portmap>> /etc/services
 # RUN echo sunrpc          111/udp         rpcbind portmap>> /etc/services
 RUN mv /init_with_ports /etc/init.d/nfs-user-server
 #remember to use the -e flag for showmount to see exports
+
+RUN mkdir /autosave; chown -R 777 /autosave
 
 #include <time.h> in fh.c rpcmisc.c and logging.c
 
@@ -32,6 +34,15 @@ RUN mv /init_with_ports /etc/init.d/nfs-user-server
 #everything below here is for TFTP
 #####################
 
-# most of the configuration for dnsmasq is done in /start
-# ENTRYPOINT [ "/bin/bash", "bash /start" ]
-ENTRYPOINT ["/bin/sh","-c", "sh /start && while true; do continue; sleep 10;done"]
+# ENTRYPOINT ["/bin/sh","-c", "sh /start && while true;do sleep infinity; done"]
+ENTRYPOINT ["/bin/sh","-c", "sh /start & sh /checkforexport"]
+
+# WORKDIR /tftp-http-proxy
+# RUN apt update; apt install git python3 golang -y
+# RUN go get -u github.com/pin/tftp
+# RUN git clone https://github.com/bwalex/tftp-http-proxy . 
+# ADD singleportpatch . 
+# RUN patch -u main.go singleportpatch
+# RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -o tftp
+# ENTRYPOINT ["/bin/sh", "-c", "python3 -m http.server -b 127.0.0.1 80 --directory / &\
+# /tftp-http-proxy/tftp -http-append-path && sh /start && sh /checkforexport"]

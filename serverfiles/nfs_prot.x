@@ -40,7 +40,7 @@
 #endif
 
 const NFS_PORT          = 2049;
-const NFS_MAXDATA       = 8192;
+const NFS_MAXDATA       = 1024;
 const NFS_MAXPATHLEN    = 1024;
 const NFS_MAXNAMLEN	= 255;
 const NFS_FHSIZE	= 32;

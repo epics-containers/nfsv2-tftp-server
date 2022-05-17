@@ -39,8 +39,8 @@
 #define CHK_ROOT	4
 
 /* Make larger reads possible. Without crashing the machine :-) */
-#undef NFS_MAXDATA
-#define NFS_MAXDATA	(16 * 1024)
+//#undef NFS_MAXDATA
+//#define NFS_MAXDATA	(16 * 1024)
 
 static char iobuf[NFS_MAXDATA];
 static char pathbuf[NFS_MAXPATHLEN + NFS_MAXNAMLEN + 1];

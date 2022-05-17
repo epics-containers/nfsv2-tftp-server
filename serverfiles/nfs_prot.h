@@ -45,7 +45,7 @@
 #ifndef _rpcsvc_nfs_prot_h
 #define _rpcsvc_nfs_prot_h
 #define NFS_PORT 2049
-#define NFS_MAXDATA 8192
+#define NFS_MAXDATA 1024
 #define NFS_MAXPATHLEN 1024
 #define NFS_MAXNAMLEN 255
 #define NFS_FHSIZE 32
