@@ -27,8 +27,10 @@ RUN mv /init_with_ports /etc/init.d/nfs-user-server
 #remember to use the -e flag for showmount to see exports
 
 RUN mkdir /autosave; chown -R 777 /autosave
-
-#include <time.h> in fh.c rpcmisc.c and logging.c
+RUN mkdir /autosave/savefilepath; mkdir /autosave/reqfilepath
+RUN touch /autosave/savefilepath/test_0.sav
+RUN echo "k8s-epics-iocs:circle:angle" >> /autosave/reqfilepath/test_0.req
+#remember to #include <time.h> in fh.c rpcmisc.c and logging.c
 
 #####################
 #everything below here is for TFTP
@@ -45,4 +47,4 @@ ENTRYPOINT ["/bin/sh","-c", "sh /start & sh /checkforexport"]
 # RUN patch -u main.go singleportpatch
 # RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -o tftp
 # ENTRYPOINT ["/bin/sh", "-c", "python3 -m http.server -b 127.0.0.1 80 --directory / &\
-# /tftp-http-proxy/tftp -http-append-path && sh /start && sh /checkforexport"]
+# /tftp-http-proxy/tftp -http-append-path & sh /start && sh /checkforexport"]

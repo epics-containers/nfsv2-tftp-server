@@ -12,8 +12,12 @@ chmod -R 777 /tftpboot
 bash /nfsbuild/debian/addaddresses.sh
 echo "/autosave 0.0.0.0/0.0.0.0(rw,sync,no_root_squash,insecure)" >> /etc/exports
 #Check if env_variable for IOC_NAME exists, if it does, link to it
-# [ ! -z "${APP_NAME}" ] && echo "/iocs/${APP_NAME}/current 0.0.0.0/0.0.0.0(rw,sync,no_root_squash,insecure)" >> /etc/exports && \
-[ ! -z "${APP_NAME}" ] && ln -s /iocs/${APP_NAME}/current/bin/RTEMS-beatnik/${IOC_NAME}.boot /tftpboot/bootfile
+
+
+#THIS IS DEPRECATED!!
+#[ ! -z "${APP_NAME}" ] && ln -s /iocs/${APP_NAME}/current/bin/RTEMS-beatnik/${IOC_NAME}.boot /tftpboot/bootfile
+
+
 #need to add logic to delete if exists I guess... 
 service rpcbind start
 bash /etc/init.d/nfs-user-server start

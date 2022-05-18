@@ -2,6 +2,6 @@
 #bash /restarts number_of_seconds
 service rpcbind stop
 bash /etc/init.d/nfs-user-server stop
-sleep $1
+[ ! -z "$1" ] && sleep $1
 rpcbind -w
 bash /etc/init.d/nfs-user-server start
