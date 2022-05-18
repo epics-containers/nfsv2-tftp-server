@@ -1,0 +1,9 @@
+mkdir -p /iocs/${APP_NAME}/${REPO_TAG}
+cd /iocs/${APP_NAME}/${REPO_TAG}
+git init; git pull ${REPO_PATH} ${REPO_TAG}
+
+cd /iocs/${APP_NAME}
+chmod -R 777 /iocs/${APP_NAME}/${REPO_TAG}
+rm -rf current; ln -s ${REPO_TAG} current
+
+echo "/iocs/${APP_NAME}/${REPO_TAG}" > /iocs/export_to_add
