@@ -1,15 +1,10 @@
-#LINES BELOW ARE FOR IF OLD PULLER SCRIPT USED 
-# while true; do sleep 15; [ -d `cat /iocs/export_to_add` ] && \
-# grep `cat /iocs/export_to_add` /etc/exports || \
-# /addexport `cat /iocs/export_to_add`; done
-# #every 15 seconds: checks if directory in file exists, checks if path is not already in exports, then adds to exports.
-
-
-#pathname should be /iocs/APP_NAME_$i/REPO_TAG_$i
-
-
-#gets IOCNAME
-# while read -r line; do echo $line | awk '{print $1}'; done < /iocs/ioc_env_vars 
+################################
+#This will likely be deprecated
+#but this script checks if any unapplied instructions for IOC provisioning
+#exist, then applies them, this includes adding paths to the IOC 
+#to /etc/exports and creating a symbolic link to the bootfile of the IOC
+#This script should run at startup, and checks for updates every 15 seconds
+################################   
 
 rm -f /myioc_env_vars
 touch /myioc_env_vars
@@ -22,9 +17,7 @@ while true; do sleep 15;
         [ ! -z "$line" ] && 
         #for each line, checks if path is in exports, and if not, adds it.
         iocPath=/iocs/`echo $line | awk '{print $1}'`/`echo $line | awk '{print $4}'`;
-        grep `echo "$iocPath"` /etc/exports || /addexport `echo "$iocPath"` `echo $line | awk '{print $5}'`;
-        #also need to create symlink to bootfile
-        #maybe I should create a copy of this db on the server, and periodically check if is has changed
+        grep `echo "$iocPath"` /etc/exports || /scripts/addexport `echo "$iocPath"` `echo $line | awk '{print $5}'`;
         bootfilePath=/iocs/`echo $line | awk '{print $1}'`/`echo $line | awk '{print $4}'`/bin/RTEMS-beatnik/`echo $line | awk '{print $2}'`.boot;
         tftpbootPath=/tftpboot/`echo $line | awk '{print $1}'`_`echo $line | awk '{print $2}'`.boot;
         rm -rf $tftpbootPath; ln -s $bootfilePath $tftpbootPath;
@@ -32,5 +25,4 @@ while true; do sleep 15;
     cp /iocs/ioc_env_vars /myioc_env_vars
     done
 
-#Think this is now working-ish, just now need to figure out what the condition is to check it (every 15 seconds? delete file after done? check diff aganst local copy to see when updated?)
-        
+    

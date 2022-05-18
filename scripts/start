@@ -1,26 +1,23 @@
-# mv /moby.txt /exports/nfs_server
-# mv /sizefiles /exports/nfs_server
+mkdir -p /run/sendsigs.omit.d
+
 sed -i '/imklog/s/^/#/' /etc/rsyslog.conf
 service rsyslog start
 
-
-mkdir /tftpboot
+mkdir -p /tftpboot
 chown -R nobody:nogroup /tftpboot
 chmod -R 777 /tftpboot
 
 
-bash /nfsbuild/debian/addaddresses.sh
+echo "/exports/nfs_server 0.0.0.0/0.0.0.0(rw,sync,no_root_squash,insecure)" >> /etc/exports
 echo "/autosave 0.0.0.0/0.0.0.0(rw,sync,no_root_squash,insecure)" >> /etc/exports
-#Check if env_variable for IOC_NAME exists, if it does, link to it
 
+[ ! -f /etc/services ] && \
+    echo "sunrpc          111/tcp         rpcbind portmap" >> /etc/services && \
+    echo "sunrpc          111/udp         rpcbind portmap" >> /etc/services
 
-#THIS IS DEPRECATED!!
-#[ ! -z "${APP_NAME}" ] && ln -s /iocs/${APP_NAME}/current/bin/RTEMS-beatnik/${IOC_NAME}.boot /tftpboot/bootfile
+cp /scripts/nfs-user-server-init /etc/init.d/nfs-user-server
 
-
-#need to add logic to delete if exists I guess... 
 service rpcbind start
 bash /etc/init.d/nfs-user-server start
-# cd /exports/nfs_server; /tftp s -w --sp
 
 dnsmasq -p 0 --enable-tftp --tftp-single-port --tftp-root /tftpboot --log-facility=/var/log/syslog

@@ -1,9 +1,23 @@
-mkdir -p /iocs/${APP_NAME}/${REPO_TAG}
-cd /iocs/${APP_NAME}/${REPO_TAG}
-git init; git pull ${REPO_PATH} ${REPO_TAG}
+i=0
+rm -f /iocs/ioc_env_vars
+while true; do 
+    #very hacky method to test if env variables are set
+    if printenv APP_NAME_$i > .tmp && printenv IOC_NAME_$i > .tmp && printenv REPO_PATH_$i > .tmp && \
+    printenv REPO_TAG_$i > .tmp && printenv CLIENTIP_$i > .tmp;
+    then rm .tmp; 
+    mkdir -p /iocs/`printenv APP_NAME_$i`/`printenv REPO_TAG_$i`
+    cd /iocs/`printenv APP_NAME_$i`/`printenv REPO_TAG_$i`
+    git init; git pull `printenv REPO_PATH_$i` `printenv REPO_TAG_$i`
+    cd /iocs/`printenv APP_NAME_$i`
+    chmod -R 777 /iocs/`printenv APP_NAME_$i`/`printenv REPO_TAG_$i`
+    rm -rf current; ln -s `printenv REPO_TAG_$i` current
+    else
+    rm .tmp
+    break
+    fi
+    let "++i"
+    done;
+    #this is probably a really dumb way to do this
 
-cd /iocs/${APP_NAME}
-chmod -R 777 /iocs/${APP_NAME}/${REPO_TAG}
-rm -rf current; ln -s ${REPO_TAG} current
 
-echo "/iocs/${APP_NAME}/${REPO_TAG}" > /iocs/export_to_add
+# echo "/iocs/${APP_NAME}/${REPO_TAG}" > /iocs/export_to_add
