@@ -1,6 +1,0 @@
-record(lsi, "$(user):sampleIOC:version") {
-    field(DTYP, "sampleIOC version")
-    field(DESC, "Version string")
-    field(SIZV, "$(SIZV=200)")
-    field(PINI, "YES")
-}

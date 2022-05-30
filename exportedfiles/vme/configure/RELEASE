@@ -1,9 +1,0 @@
-SUPPORT = /dls_sw/work/R7.0.6-RTEMS-5/support
-# Module definitions
-ASYN = $(SUPPORT)/asyn
-HY8401IP = $(SUPPORT)/Hy8401ip
-HY8402IP = $(SUPPORT)/Hy8402ip
-IPAC = $(SUPPORT)/ipac-2.13
-
-# EPICS Base appears last
-EPICS_BASE = /dls_sw/work/epics/R7.0.6-RTEMS-5
