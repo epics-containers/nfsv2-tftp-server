@@ -1,0 +1,86 @@
+diff -u serverfiles2/BUILD serverfiles/BUILD
+--- serverfiles2/BUILD	2022-05-30 12:55:16.166758000 +0100
++++ serverfiles/BUILD	2022-05-19 11:03:20.596551000 +0100
+@@ -488,7 +488,7 @@
+ 	echo -n "Please press return to continue "; read foo
+ fi
+ 
+-sh configure
++sh `dirname "$0"`/configure
+ if [ $? -ne 0 ]; then
+   echo
+   echo
+Common subdirectories: serverfiles2/debian and serverfiles/debian
+diff -u serverfiles2/fh.c serverfiles/fh.c
+--- serverfiles2/fh.c	2022-05-30 12:55:17.359772000 +0100
++++ serverfiles/fh.c	2022-05-19 09:15:43.830102000 +0100
+@@ -50,6 +50,7 @@
+  */
+ 
+ #include <assert.h>
++#include <time.h>
+ #include "nfsd.h"
+ #include "rpcmisc.h"
+ #include "signals.h"
+Only in serverfiles2: .git
+diff -u serverfiles2/logging.c serverfiles/logging.c
+--- serverfiles2/logging.c	2022-05-30 12:55:17.636770000 +0100
++++ serverfiles/logging.c	2022-05-19 09:15:43.843085000 +0100
+@@ -14,7 +14,7 @@
+  */
+ 
+ #include "nfsd.h"
+-
++#include <time.h>
+ #ifdef HAVE_SYSLOG_H
+ #include <syslog.h>
+ #else
+diff -u serverfiles2/nfsd.c serverfiles/nfsd.c
+--- serverfiles2/nfsd.c	2022-05-30 12:55:18.048739000 +0100
++++ serverfiles/nfsd.c	2022-05-19 14:19:08.920875000 +0100
+@@ -39,8 +39,8 @@
+ #define CHK_ROOT	4
+ 
+ /* Make larger reads possible. Without crashing the machine :-) */
+-#undef NFS_MAXDATA
+-#define NFS_MAXDATA	(16 * 1024)
++//#undef NFS_MAXDATA
++//#define NFS_MAXDATA	(16 * 1024)
+ 
+ static char iobuf[NFS_MAXDATA];
+ static char pathbuf[NFS_MAXPATHLEN + NFS_MAXNAMLEN + 1];
+diff -u serverfiles2/nfs_prot.h serverfiles/nfs_prot.h
+--- serverfiles2/nfs_prot.h	2022-05-30 12:55:18.003780000 +0100
++++ serverfiles/nfs_prot.h	2022-05-19 11:03:51.335631000 +0100
+@@ -45,7 +45,7 @@
+ #ifndef _rpcsvc_nfs_prot_h
+ #define _rpcsvc_nfs_prot_h
+ #define NFS_PORT 2049
+-#define NFS_MAXDATA 8192
++#define NFS_MAXDATA 1024
+ #define NFS_MAXPATHLEN 1024
+ #define NFS_MAXNAMLEN 255
+ #define NFS_FHSIZE 32
+diff -u serverfiles2/nfs_prot.x serverfiles/nfs_prot.x
+--- serverfiles2/nfs_prot.x	2022-05-30 12:55:18.020751000 +0100
++++ serverfiles/nfs_prot.x	2022-05-19 14:19:06.632724000 +0100
+@@ -40,7 +40,7 @@
+ #endif
+ 
+ const NFS_PORT          = 2049;
+-const NFS_MAXDATA       = 8192;
++const NFS_MAXDATA       = 1024;
+ const NFS_MAXPATHLEN    = 1024;
+ const NFS_MAXNAMLEN	= 255;
+ const NFS_FHSIZE	= 32;
+diff -u serverfiles2/rpcmisc.c serverfiles/rpcmisc.c
+--- serverfiles2/rpcmisc.c	2022-05-30 12:55:18.249736000 +0100
++++ serverfiles/rpcmisc.c	2022-05-19 09:15:43.886074000 +0100
+@@ -27,6 +27,7 @@
+ #include <netinet/in.h>
+ #include "rpcmisc.h"
+ #include "logging.h"
++#include <time.h>
+ 
+ /* Another undefined function in RPC */
+ extern SVCXPRT *svcfd_create(int sock, u_int ssize, u_int rsize);

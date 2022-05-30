@@ -1,13 +1,10 @@
+#!/bin/bash
 mkdir -p /run/sendsigs.omit.d
+# mkdir -p /var/state/nfs; touch /var/state/nfs/devtab
 
 sed -i '/imklog/s/^/#/' /etc/rsyslog.conf
 #removes the imklog module, which provides kernel logging
 service rsyslog start
-
-# mkdir -p /tftpboot
-# chown -R nobody:nogroup /tftpboot
-# chmod -R 777 /tftpboot
-
 
 [ -d /exports/nfs_server ] && echo "/exports/nfs_server 0.0.0.0/0.0.0.0(rw,sync,no_root_squash,insecure)" >> /etc/exports
 # [ -d /iocs ] && echo "/iocs 0.0.0.0/0.0.0.0(ro,sync,no_root_squash,insecure)" >> /etc/exports
@@ -21,8 +18,10 @@ chmod -R 777 /autosave
 
 cp /scripts/nfs-user-server-init /etc/init.d/nfs-user-server
 
+/scripts/updateexports.sh -d
+
 service rpcbind start
-bash /etc/init.d/nfs-user-server start
+service nfs-user-server start
 
 dnsmasq -p 0 --enable-tftp --tftp-single-port --tftp-root /iocs --log-facility=/var/log/syslog
 
