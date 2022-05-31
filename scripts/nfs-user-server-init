@@ -17,7 +17,7 @@ test -x /usr/sbin/rpc.nfsd -a -f /etc/exports || exit 0
 
 case "$1" in
 start)
-	printf "Starting $DESC:"
+	printf "Starting %s:" "$DESC"
 	start-stop-daemon --start --oknodo --quiet --exec /usr/sbin/rpc.nfsd -- -r -P 2049
 	printf " nfsd"
 	start-stop-daemon --start --oknodo --quiet --exec /usr/sbin/rpc.mountd -- -r -P 20048
@@ -25,7 +25,7 @@ start)
 	printf ".\n"
 	;;
 stop)
-	printf "Stopping $DESC:"
+	printf "Stopping %s:" "$DESC"
 	start-stop-daemon --stop --oknodo --quiet --exec /usr/sbin/rpc.mountd
 	printf " mountd"
 	start-stop-daemon --stop --oknodo --quiet --exec /usr/sbin/rpc.nfsd
@@ -33,7 +33,7 @@ stop)
 	printf ".\n"
 	;;
 reload | force-reload)
-	printf "Reloading $DESC' configuration files.\n"
+	printf "Reloading %s' configuration files.\n" "$DESC"
 	start-stop-daemon --stop --signal 1 --quiet --exec /usr/sbin/rpc.mountd
 	start-stop-daemon --stop --signal 1 --quiet --exec /usr/sbin/rpc.nfsd
 	;;
@@ -43,7 +43,7 @@ restart)
 	$0 start
 	;;
 *)
-	printf "Usage: $0 {start|stop|restart|reload|force-reload}\n" >&2
+	printf "Usage: %s {start|stop|restart|reload|force-reload}\n" "$0" >&2
 	exit 1
 	;;
 esac
