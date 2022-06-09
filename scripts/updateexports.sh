@@ -12,7 +12,13 @@ done
 
 changesMade=0
 
-if [ ! -f /iocs/exports ]; then echo "NFS: /iocs/exports does not exist" >> /var/log/syslog; exit; fi
+if [ ! -f /iocs/exports ]; then 
+    if ! grep 'NFS: /iocs/exports does not exist' /var/log/syslog; 
+    then echo "NFS: /iocs/exports does not exist" >> /var/log/syslog; 
+    fi
+exit
+fi
+
 if [ ! -f /etc/exports ]; then touch /etc/exports; fi
 rm -f /etc/requiredexports
 cp /iocs/exports /etc/requiredexports

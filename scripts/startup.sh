@@ -12,8 +12,6 @@ if [ "${EXPORT_PER_CLIENT}" != "true" ]; then
 fi
 
 
-chmod -R 777 /autosave 
-
 [ ! -f /etc/services ] && \
     echo "sunrpc          111/tcp         rpcbind portmap" >> /etc/services && \
     echo "sunrpc          111/udp         rpcbind portmap" >> /etc/services
@@ -31,5 +29,7 @@ service nfs-user-server start
 dnsmasq -p 0 --enable-tftp --tftp-single-port --tftp-root /iocs --log-facility=/var/log/syslog
 
 if [ "${EXPORT_PER_CLIENT}" = "true" ]; then
-/scripts/checkexports.sh
+/scripts/checkexports.sh &
 fi
+
+/scripts/versionchecker.sh

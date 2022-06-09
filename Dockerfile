@@ -14,5 +14,6 @@ RUN rm -rf /serverfiles /buildoptions.cfg /nfsbuild.patch
 
 COPY scripts /scripts
 RUN chmod +x -R /scripts
+ENV PATH=/scripts/:$PATH
 
-ENTRYPOINT ["/bin/bash","-c", "bash /scripts/startup.sh && sleep infinity"]
+ENTRYPOINT ["/bin/bash", "-c", "bash /startup.sh && sleep infinity"]
