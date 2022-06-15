@@ -24,7 +24,7 @@ rm -f /etc/requiredexports
 cp /iocs/exports /etc/requiredexports
 #Reads /iocs/exports line by line. Reads into "9" to avoid interruption when
 #writing to stdin stdout stderr (0, 1, 2)
-while IFS= read -r -u 9 line; do
+while IFS= read -r -u 3 line; do
 if [ -n "$line" ]; then
     iocName="$(echo "$line" | awk '{print $1}')"
     iocIP="$(echo "$line" | awk '{print $2}')"
@@ -46,6 +46,6 @@ if [ -n "$line" ]; then
     fi
 
 fi
-done 9< /etc/requiredexports
+done 3< /etc/requiredexports
 
 if [ "$changesMade" = 1 ] && [ "$dontRestart" = "false" ]; then service nfs-user-server reload; fi

@@ -15,7 +15,7 @@ if [ "${EXPORT_PER_CLIENT}" != "true" ]; then
 [ -d /iocs ] && echo "/iocs 0.0.0.0/0.0.0.0(ro,sync,no_root_squash,insecure)" >> /etc/exports
 [ -d /autosave ] && echo "/autosave 0.0.0.0/0.0.0.0(rw,sync,no_root_squash,insecure)" >> /etc/exports
 else
-updateexports.sh -d
+updateiocexports.sh
 fi
 
 cp /scripts/nfs-user-server-init /etc/init.d/nfs-user-server
