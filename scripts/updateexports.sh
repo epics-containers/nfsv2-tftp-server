@@ -33,17 +33,15 @@ if [ -n "$line" ]; then
     #check if /iocs/$iocName exists, and check if it's not already in /etc/exports
     #delete entries using same IP or IOC name if they exist
     if [ -d /iocs/"$iocName" ] && ! grep "/iocs/$iocName $iocIP(" /etc/exports > /dev/null; then
-        sed -i "/iocs\/.*$iocIP(/d" /etc/exports; sed -i "/^\/iocs\/$iocName /d" /etc/exports;
-        echo "/iocs/$iocName $iocIP(ro,sync,no_root_squash,insecure)" >> /etc/exports
-        echo "Adding export: /iocs/$iocName $iocIP(ro,sync,no_root_squash,insecure)"
+        sed -i "/iocs\/.*$iocIP(/d" /etc/exports
+        addexport.sh ro /iocs/"$iocName" "$iocIP"
         changesMade=1
     fi
 
     #as above, but for autosave directories
     if [ "$autosave" = "autosave" ] && [ -d /autosave/"$iocName" ] && ! grep "/autosave/$iocName $iocIP(" /etc/exports > /dev/null; then
-        sed -i "/autosave\/.*$iocIP(/d" /etc/exports; sed -i "/^\/autosave\/$iocName /d" /etc/exports;
-        echo "/autosave/$iocName $iocIP(rw,sync,no_root_squash,insecure)" >> /etc/exports
-        echo "Adding export: /autosave/$iocName $iocIP(rw,sync,no_root_squash,insecure)"
+        sed -i "/autosave\/.*$iocIP(/d" /etc/exports
+        addexport.sh rw /autosave/"$iocName" "$iocIP"
         changesMade=1
     fi
 

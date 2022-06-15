@@ -21,4 +21,4 @@ versionchecker.sh: Looks for version.txt in all folders in /iocs and prints the 
 
 startup.sh: Starts server and logging processes. If EXPORT_PER_CLIENT=true is set in the YAML file, the scripts above get called to add the right paths to /etc/exports, otherwise the entire /autosave and /iocs directories are exported to all clients on the network. Note that wildcard and CIDR notation do not appear to work in The LINUX User Space NFS Server, so the subnet mask should be specified explicitly. 
 
-example.yaml: contains definitions for the Deployment, Service and required Persistent Volume Claims. Note that the namespace and image fields need to be set. The image field should point to a repository containing a docker formatted image made from the Dockerfile in this repository.
+example.yaml: contains definitions for the Deployment, Service and required Persistent Volume Claims. Note that the namespace and image fields need to be set. The image field should point to a registry containing a docker formatted image made from the Dockerfile in this repository.

@@ -11,23 +11,12 @@ service rsyslog start
     echo "sunrpc          111/udp         rpcbind portmap" >> /etc/services
 #Some container images do not create /etc/services file which maps services to ports
 
-if [ "${EXPORT_PER_CLIENT}" != "true" ]; then
-[ -d /iocs ] && echo "/iocs 0.0.0.0/0.0.0.0(ro,sync,no_root_squash,insecure)" >> /etc/exports
-[ -d /autosave ] && echo "/autosave 0.0.0.0/0.0.0.0(rw,sync,no_root_squash,insecure)" >> /etc/exports
-else
-updateexports.sh -d
-fi
-
 cp /scripts/nfs-user-server-init /etc/init.d/nfs-user-server
+touch /etc/exports
 
 service rpcbind start
 service nfs-user-server start
 echo 'alias "nfs"="service nfs-user-server"' >> "$HOME"/.bashrc
 
-dnsmasq -p 0 --enable-tftp --tftp-single-port --tftp-root /iocs --log-facility=/var/log/syslog
-
-if [ "${EXPORT_PER_CLIENT}" = "true" ]; then
-checkexports.sh &
-fi
-
-versionchecker.sh
+mkdir -p /tftpboot
+dnsmasq -p 0 --enable-tftp --tftp-single-port --tftp-root /tftpboot --log-facility=/var/log/syslog
