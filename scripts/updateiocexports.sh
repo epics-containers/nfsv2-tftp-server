@@ -33,6 +33,7 @@ if [ -n "$line" ]; then
     #check if /iocs/$iocName exists, and check if it's not already in /etc/exports
     #delete entries using same IP or IOC name if they exist
     if [ -d /iocs/"$iocName" ] && ! grep "/iocs/$iocName $iocIP(" /etc/exports > /dev/null; then
+        sed -i "/^\/iocs\/$iocName /d" /etc/exports
         sed -i "/iocs\/.*$iocIP(/d" /etc/exports
         addexport.sh ro /iocs/"$iocName" "$iocIP"
         changesMade=1
@@ -40,6 +41,7 @@ if [ -n "$line" ]; then
 
     #as above, but for autosave directories
     if [ "$autosave" = "autosave" ] && [ -d /autosave/"$iocName" ] && ! grep "/autosave/$iocName $iocIP(" /etc/exports > /dev/null; then
+        sed -i "/^\/autosave\/$iocName /d" /etc/exports
         sed -i "/autosave\/.*$iocIP(/d" /etc/exports
         addexport.sh rw /autosave/"$iocName" "$iocIP"
         changesMade=1

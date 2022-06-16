@@ -31,6 +31,5 @@ clientip="0.0.0.0/0.0.0.0"
 echo No IP specified, exporting to "$clientip".
 fi
 
-sed -i "/^$exportpath_escaped /d" /etc/exports;
 echo "$exportpath $clientip($permissions,no_root_squash,sync,insecure)" >> /etc/exports && \
 echo "Adding export: $exportpath $clientip($permissions,sync,no_root_squash,insecure)"
