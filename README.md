@@ -27,3 +27,7 @@ restart.sh: restarts the NFSv2 server processes. Deprecated, does not get called
 versionchecker.sh: Looks for version.txt in all folders in /iocs and prints the output. Can be used on a workstation by running "kubectl exec nfstftpserver-pod-name -- versionchecker.sh" to see the deployed versions. Assumes that the file version.txt is provided when the IOC is deployed. 
 
 startup.sh: Starts server and logging processes. If EXPORT_PER_CLIENT=true is set in the YAML file, the scripts above get called to add the paths specified in /iocs/exports to /etc/exports, otherwise the entire /autosave and /iocs directories are exported to all clients on the default subnet specified in the environment by $DEFAULT_NET_IP and $DEFAULT_NETMASK. Note that wildcard and CIDR notation do not appear to work in The LINUX User Space NFS Server, so the subnet mask should be specified explicitly. 
+
+startupnopv.sh: simplified startup script that exports no directories over NFS at startup. User will have to exec into the pod to manually add exports in using addexport.sh.
+
+The yaml folder contains two .yaml files. nfstftp.yaml contains definitions for the required /iocs and /autosave Persistent Volume Claims, and executes the default entrypoint of the image, startup.sh. example.yaml starts with startupnopv.sh and is used in the tutorial pages for deploying an IOC from this server: https://confluence.diamond.ac.uk/pages/viewpage.action?pageId=151230334
