@@ -1,0 +1,109 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: ioc-volume-claim
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+ 
+
+---
+
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: autosave-volume-claim
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nfstftpserver
+  labels:
+    app: nfstftpserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nfstftpserver
+  template:
+    metadata:
+      labels:
+        app: nfstftpserver
+    spec:
+      volumes:
+        - name: ioc-volume
+          persistentVolumeClaim:
+           claimName: ioc-volume-claim
+        - name: autosave-volume
+          persistentVolumeClaim:
+           claimName: autosave-volume-claim
+      containers:
+      - name: server
+        image: gcr.io/diamond-privreg/hqv85942/nfsuserserver:latest
+        env:
+        - name: EXPORT_PER_CLIENT
+          value: "true"
+        - name: DEFAULT_NET_IP
+          value: "172.23.240.0"
+        - name: DEFAULT_NETMASK
+          value: "255.255.240.0"
+        ports:
+        - containerPort: 2049
+          protocol: UDP
+        - containerPort: 20048
+          protocol: UDP
+        - containerPort: 111
+          protocol: UDP
+        - containerPort: 69
+          protocol: UDP
+        volumeMounts:
+          - mountPath: "/iocs"
+            name: ioc-volume
+          - mountPath: "/autosave"
+            name: autosave-volume
+
+
+---
+
+
+apiVersion: v1 
+kind: Service
+metadata:
+  name: nfstftpserver
+  labels:
+    app: nfstftpserver
+spec:
+  externalTrafficPolicy: Local
+  type: LoadBalancer
+  ports:
+    - name: rpcbind
+      port: 111
+      protocol: UDP
+      targetPort: 111
+    - name: nfsd
+      port: 2049
+      protocol: UDP
+      targetPort: 2049
+    - name: mountd
+      port: 20048
+      protocol: UDP
+      targetPort: 20048
+    - name: tftp
+      port: 69
+      protocol: UDP
+      targetPort: 69
+  sessionAffinity: None
+  selector:
+    app: nfstftpserver
+
