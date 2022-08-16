@@ -107,3 +107,38 @@ spec:
     app: nftftpserver
   loadBalancerIP: "172.23.194.225"
 
+---
+
+# Pod as a target for kubectl cp commands
+# to put them in the volume.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: file-transfer-station
+spec:
+  replicas: 1
+  template:
+    spec:
+      volumes:
+        - name: ioc-volume
+          persistentVolumeClaim:
+            claimName: ioc-volume-claim
+        - name: autosave-volume
+          persistentVolumeClaim:
+            claimName: autosave-volume-claim
+      containers:
+      - name: file-transfer-station
+        image: debian:latest
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "1"
+          limits:
+            memory: "1Gi"
+            cpu: "2"
+        volumeMounts:
+          - mountPath: "/iocs"
+            name: ioc-volume
+          - mountPath: "/autosave"
+            name: autosave-volume
+
