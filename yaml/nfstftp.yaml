@@ -117,7 +117,13 @@ metadata:
   name: file-transfer-station
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: file-transfer-station
   template:
+    metadata:
+      labels:
+        app: file-transfer-station
     spec:
       volumes:
         - name: ioc-volume
