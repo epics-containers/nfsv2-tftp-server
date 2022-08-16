@@ -7,6 +7,15 @@ mkdir -p /run/sendsigs.omit.d
 
 # Remove the imklog module from rsyslog, which provides kernel logging
 sed -i '/imklog/s/^/#/' /etc/rsyslog.conf
+
+# Hack alert
+#
+# rpcbind service file looks for the permissions of /run/rpcbind
+# but it makes an assumption that breaks when selinux is active
+# as it is on RHEL8 nodes. Below fixes a regex to allow this case
+#
+sed -i 's/drwxr-xr-x/drwxr-xr-x[\\.]?/g' /etc/init.d/rpcbind
+
 service rsyslog start
 
 # Some container images do not create /etc/services file which maps services to ports
