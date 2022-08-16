@@ -1,3 +1,4 @@
+# IOC volume
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -8,11 +9,10 @@ spec:
   resources:
     requests:
       storage: 1Gi
- 
 
 ---
 
-
+# Autosave volume
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -23,6 +23,7 @@ spec:
   resources:
     requests:
       storage: 1Gi
+
 ---
 
 apiVersion: apps/v1
@@ -73,9 +74,7 @@ spec:
           - mountPath: "/autosave"
             name: autosave-volume
 
-
 ---
-
 
 apiVersion: v1 
 kind: Service
@@ -84,7 +83,7 @@ metadata:
   labels:
     app: nfstftpserver
 spec:
-  externalTrafficPolicy: Local
+  externalTrafficPolicy: Cluster
   type: LoadBalancer
   ports:
     - name: rpcbind
