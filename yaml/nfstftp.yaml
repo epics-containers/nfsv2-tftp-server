@@ -135,6 +135,9 @@ spec:
       containers:
       - name: file-transfer-station
         image: debian:latest
+        command: ["/bin/sleep"]
+        args: ["infinity"]
+
         resources:
           requests:
             memory: "512Mi"
