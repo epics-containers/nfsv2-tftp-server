@@ -105,5 +105,5 @@ spec:
   sessionAffinity: None
   selector:
     app: nftftpserver
-  loadBalancerIP: "172.23.194.125"
+  loadBalancerIP: "172.23.194.225"
 
