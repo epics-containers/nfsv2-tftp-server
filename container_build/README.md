@@ -18,16 +18,5 @@ The buildoptions.cfg file is piped into the NFS server's BUILD script to automat
 Most of the scripts in the scripts directory are specific to the RTEMS EPICS IOCs delivery prototype project at Diamond. 
 These scripts expect that the server pod has access to two Persistent Volume k8s objects mounted on /iocs and /autosave.
 
-updateiocexports.sh: reads the file /iocs/exports and reads each line to add to /etc/exports (the file that tells the NFS server while directories to export to which clients) the appropriate ioc source folder path and autosave folder exported to the specified IP address. Briefly restarts the two NFS daemons rpc.nfsd and rpc.mountd to update the exports list; this restart is brief and should not be problematic over UDP. By default only gets called when the environment variable EXPORT_PER_CLIENT=true is set. 
-
-checkforupdates.sh: periodically checks for updates in the /iocs/exports file and runs updateiocexports.sh when changes are found.
-
-restart.sh: restarts the NFSv2 server processes. Deprecated, does not get called by default, typically it is sufficient to run "service nfs-user-server reload" instead to update the exports list.
-
-versionchecker.sh: Looks for version.txt in all folders in /iocs and prints the output. Can be used on a workstation by running "kubectl exec nfstftpserver-pod-name -- versionchecker.sh" to see the deployed versions. Assumes that the file version.txt is provided when the IOC is deployed. 
-
 startup.sh: Starts server and logging processes. If EXPORT_PER_CLIENT=true is set in the YAML file, the scripts above get called to add the paths specified in /iocs/exports to /etc/exports, otherwise the entire /autosave and /iocs directories are exported to all clients on the default subnet specified in the environment by $DEFAULT_NET_IP and $DEFAULT_NETMASK. Note that wildcard and CIDR notation do not appear to work in The LINUX User Space NFS Server, so the subnet mask should be specified explicitly. 
 
-startupnopv.sh: simplified startup script that exports no directories over NFS at startup. User will have to exec into the pod to manually add exports in using addexport.sh.
-
-The yaml folder contains two .yaml files. nfstftp.yaml contains definitions for the required /iocs and /autosave Persistent Volume Claims, and executes the default entrypoint of the image, startup.sh. example.yaml starts with startupnopv.sh and is used in the tutorial pages for deploying an IOC from this server: https://confluence.diamond.ac.uk/pages/viewpage.action?pageId=151230334
