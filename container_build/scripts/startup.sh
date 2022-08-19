@@ -2,7 +2,7 @@
 
 # Startup script to bring up NFSv2 and TFTP services
 
-# AW - inherited this line but I don't know why it is needed
+# Empirically required to start rpcbind
 mkdir -p /run/sendsigs.omit.d
 
 # Remove the imklog module from rsyslog, which provides kernel logging
