@@ -2,11 +2,11 @@ build-image:
   tags:
     - docker-image
   image:
-    name: gcr.io/kaniko-project/executor:debug
+    name: gcr.io/diamond-privreg/container-tools/kaniko-executor:v1.9.1-debug
     entrypoint: [""]
   script:
     - echo "Building image..."
     - env | grep "CI_"
-    - /busybox/sh ./kanikobuild.sh
+    - /bin/sh ./kanikobuild.sh
     - echo "Done"
     
