@@ -6,13 +6,11 @@ RUN apt update -y; \
 # nfs-user-server with v2 support is an abandoned project
 # To protect against it disappearing we use a fork in dls-controls
 RUN git clone https://github.com/dls-controls/nfs-user-server /serverfiles
-COPY nfsbuild.patch buildoptions.cfg /
-RUN patch -s -p0 < /nfsbuild.patch
+COPY config /config
+RUN patch -s -p0 < /config/nfsbuild.patch
 
-RUN cd /serverfiles; cat /buildoptions.cfg | ./BUILD; \
+RUN cd /serverfiles; cat /config/buildoptions.cfg | ./BUILD; \
     make install
-
-RUN rm -rf /serverfiles /buildoptions.cfg /nfsbuild.patch
 
 COPY scripts /scripts
 RUN chmod +x -R /scripts
