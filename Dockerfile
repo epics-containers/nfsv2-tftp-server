@@ -16,4 +16,8 @@ COPY scripts /scripts
 RUN chmod +x -R /scripts
 ENV PATH=/scripts/:$PATH
 
+# setup necessary folders
+# sendsigs.omit.d Empirically required to start rpcbind
+RUN mkdir -p /run/sendsigs.omit.d /iocs /autosave
+
 ENTRYPOINT ["/bin/bash", "-c", "bash startup.sh && sleep infinity"]

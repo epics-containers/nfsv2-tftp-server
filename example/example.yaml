@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nfs-server-no-pv
+  name: nfs-tftp
   labels:
-    app: nfs-server-no-pv
+    app: nfs-tftp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nfs-server-no-pv
+      app: nfs-tftp
   template:
     metadata:
       labels:
-        app: nfs-server-no-pv
+        app: nfs-tftp
     spec:
       containers:
         - name: server
-          image: gcr.io/diamond-privreg/hqv85942/nfsuserserver:confluenceexample
+          image: ghcr.io/epics-containers/nfsv2-tftp-server:main
           ports:
             - containerPort: 2049
               protocol: UDP
@@ -27,23 +27,22 @@ spec:
             - containerPort: 69
               protocol: UDP
           command: ["/bin/bash"]
-          args: ["-c", "bash startupnopv.sh && sleep infinity"]
+          args: ["-c", "bash /scripts/startup.sh && sleep infinity"]
 
           resources:
             limits:
-              memory: 50Mib
+              memory: 50Mi
               cpu: 100m
             requests:
-              memory: 20Mib
+              memory: 20Mi
               cpu: 50m
-
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: nfs-server-no-pv
+  name: nfs-tftp
   labels:
-    app: nfs-server-no-pv
+    app: nfs-tftp
 spec:
   externalTrafficPolicy: Local
   type: LoadBalancer
@@ -64,6 +63,8 @@ spec:
       port: 69
       protocol: UDP
       targetPort: 69
+  # a pollux static IP
+  loadBalancerIP: "172.23.168.198"
   sessionAffinity: None
   selector:
-    app: nfs-server-no-pv
+    app: nfs-tftp

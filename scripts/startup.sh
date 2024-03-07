@@ -2,8 +2,8 @@
 
 # Startup script to bring up NFSv2 and TFTP services
 
-# Empirically required to start rpcbind
-mkdir -p /run/sendsigs.omit.d
+echo configuring NFSv2 and TFTP
+echo ...
 
 # Remove the imklog module from rsyslog, which provides kernel logging
 sed -i '/imklog/s/^/#/' /etc/rsyslog.conf
@@ -27,8 +27,8 @@ echo 'alias "nfs"="service nfs-user-server"' >> "$HOME"/.bashrc
 cp /scripts/nfs-user-server-init /etc/init.d/nfs-user-server
 
 # Configure exports file
-if [ -n "$DEFAULT_NET_IP" ] && [ -n "$DEFAULT_NETMASK" ]; 
-then 
+if [ -n "$DEFAULT_NET_IP" ] && [ -n "$DEFAULT_NETMASK" ];
+then
 [ -d /iocs ] && echo "/iocs $DEFAULT_NET_IP/$DEFAULT_NETMASK(ro,sync,no_root_squash,insecure)" >> /etc/exports
 [ -d /autosave ] && echo "/autosave $DEFAULT_NET_IP/$DEFAULT_NETMASK(rw,sync,no_root_squash,insecure)" >> /etc/exports
 else
@@ -42,3 +42,5 @@ service nfs-user-server start
 
 # Start TFTP
 dnsmasq -p 0 --enable-tftp --tftp-single-port --tftp-root /iocs --log-facility=/var/log/syslog
+
+echo NFSv2 and TFTP server now live ...
