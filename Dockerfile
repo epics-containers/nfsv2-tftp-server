@@ -1,4 +1,4 @@
-FROM debian:11.3
+FROM debian:12.5
 CMD ["/bin/bash"]
 RUN apt update -y; \
     DEBIAN_FRONTEND=noninteractive apt install git gcc make rsyslog nfs-common dnsmasq net-tools -y
