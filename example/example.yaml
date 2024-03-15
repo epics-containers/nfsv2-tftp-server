@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: server
-          image: ghcr.io/epics-containers/nfsv2-tftp-server:main
+          image: ghcr.io/epics-containers/nfsv2-tftp-server:0.1.1
           ports:
             - containerPort: 2049
               protocol: UDP
