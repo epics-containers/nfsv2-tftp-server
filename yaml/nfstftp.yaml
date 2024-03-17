@@ -11,7 +11,6 @@ spec:
       storage: 1Gi
 
 ---
-
 # Autosave volume
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -25,7 +24,6 @@ spec:
       storage: 1Gi
 
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -50,33 +48,32 @@ spec:
           persistentVolumeClaim:
             claimName: autosave-volume-claim
       containers:
-      - name: server
-        image: gcr.io/diamond-privreg/controls/nfsv2-tftp-server:latest
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "1"
-          limits:
-            memory: "1Gi"
-            cpu: "2"
-        ports:
-        - containerPort: 2049
-          protocol: UDP
-        - containerPort: 20048
-          protocol: UDP
-        - containerPort: 111
-          protocol: UDP
-        - containerPort: 69
-          protocol: UDP
-        volumeMounts:
-          - mountPath: "/iocs"
-            name: ioc-volume
-          - mountPath: "/autosave"
-            name: autosave-volume
+        - name: server
+          image: gcr.io/diamond-privreg/controls/nfsv2-tftp-server:latest
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "1"
+            limits:
+              memory: "1Gi"
+              cpu: "2"
+          ports:
+            - containerPort: 2049
+              protocol: UDP
+            - containerPort: 20048
+              protocol: UDP
+            - containerPort: 111
+              protocol: UDP
+            - containerPort: 69
+              protocol: UDP
+          volumeMounts:
+            - mountPath: "/iocs"
+              name: ioc-volume
+            - mountPath: "/autosave"
+              name: autosave-volume
 
 ---
-
-apiVersion: v1 
+apiVersion: v1
 kind: Service
 metadata:
   name: nfstftpserver
@@ -108,7 +105,6 @@ spec:
   loadBalancerIP: "172.23.194.225"
 
 ---
-
 # Pod as a target for kubectl cp commands
 # to put them in the volume.
 apiVersion: apps/v1
@@ -133,21 +129,20 @@ spec:
           persistentVolumeClaim:
             claimName: autosave-volume-claim
       containers:
-      - name: file-transfer-station
-        image: debian:latest
-        command: ["/bin/sleep"]
-        args: ["infinity"]
+        - name: file-transfer-station
+          image: debian:latest
+          command: ["/bin/sleep"]
+          args: ["infinity"]
 
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "1"
-          limits:
-            memory: "1Gi"
-            cpu: "2"
-        volumeMounts:
-          - mountPath: "/iocs"
-            name: ioc-volume
-          - mountPath: "/autosave"
-            name: autosave-volume
-
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "1"
+            limits:
+              memory: "1Gi"
+              cpu: "2"
+          volumeMounts:
+            - mountPath: "/iocs"
+              name: ioc-volume
+            - mountPath: "/autosave"
+              name: autosave-volume

@@ -1,3 +1,29 @@
+# IOC volume
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: ioc-volume-claim
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+# Autosave volume
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: autosave-volume-claim
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -14,6 +40,18 @@ spec:
       labels:
         app: nfs-tftp
     spec:
+      volumes:
+        - name: ioc-volume
+          persistentVolumeClaim:
+            claimName: ioc-volume-claim
+        - name: autosave-volume
+          emptyDir: {}
+        # TODO - we should rsync to this volume from the autosave PV during
+        # runtime and rsync from it at startup
+        - name: autosave-backing-store
+          persistentVolumeClaim:
+            claimName: autosave-volume-claim
+
       containers:
         - name: server
           image: ghcr.io/epics-containers/nfsv2-tftp-server:0.1.1
@@ -36,6 +74,15 @@ spec:
             requests:
               memory: 20Mi
               cpu: 50m
+
+          volumeMounts:
+            - mountPath: "/iocs"
+              name: ioc-volume
+            - mountPath: "/autosave"
+              name: autosave-volume
+            - mountPath: "/autosave-backing-store"
+              name: autosave-backing-store
+
 ---
 apiVersion: v1
 kind: Service
@@ -63,8 +110,8 @@ spec:
       port: 69
       protocol: UDP
       targetPort: 69
-  # a pollux static IP
-  loadBalancerIP: "172.23.168.198"
+  # a j20 static IP
+  loadBalancerIP: "172.23.90.238"
   sessionAffinity: None
   selector:
     app: nfs-tftp
