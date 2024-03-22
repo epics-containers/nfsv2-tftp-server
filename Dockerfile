@@ -32,8 +32,7 @@ ENV PATH=/scripts/:$PATH
 # sendsigs.omit.d Empirically required to start rpcbind
 RUN mkdir -p /run/sendsigs.omit.d /iocs /autosave
 
-# start an rsync deamon for debugging
+# configure rsync deamon for debugging
 COPY rsyncd.conf /etc/rsyncd.conf
-RUN rsync --daemon
 
 ENTRYPOINT ["/bin/bash", "-c", "bash startup.sh && sleep infinity"]

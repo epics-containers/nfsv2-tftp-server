@@ -44,3 +44,7 @@ service nfs-user-server start
 dnsmasq -p 0 --enable-tftp --tftp-single-port --tftp-root /iocs --log-facility=/var/log/syslog
 
 echo NFSv2 and TFTP server now live ...
+
+rsync --daemon
+
+echo rsync server now live ...
