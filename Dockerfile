@@ -2,15 +2,18 @@ FROM debian:11.3
 
 CMD ["/bin/bash"]
 RUN apt-get update -y; \
-    DEBIAN_FRONTEND=noninteractive apt install \
+    DEBIAN_FRONTEND=noninteractive apt install -y \
+    dnsmasq \
     git \
     gcc \
+    libntirpc-dev \
     make \
+    nfs-common \
+    net-tools \
+    procps \
     rsync \
     rsyslog \
-    nfs-common \
-    dnsmasq \
-    net-tools -y
+    vim
 
 # nfs-user-server with v2 support is an abandoned project
 # To protect against it disappearing we use a fork in dls-controls
