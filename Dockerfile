@@ -1,7 +1,16 @@
 FROM debian:11.3
+
 CMD ["/bin/bash"]
-RUN apt update -y; \
-    DEBIAN_FRONTEND=noninteractive apt install git gcc make rsyslog nfs-common dnsmasq net-tools -y
+RUN apt-get update -y; \
+    DEBIAN_FRONTEND=noninteractive apt install \
+    git \
+    gcc \
+    make \
+    rsync \
+    rsyslog \
+    nfs-common \
+    dnsmasq \
+    net-tools -y
 
 # nfs-user-server with v2 support is an abandoned project
 # To protect against it disappearing we use a fork in dls-controls
@@ -19,5 +28,9 @@ ENV PATH=/scripts/:$PATH
 # setup necessary folders
 # sendsigs.omit.d Empirically required to start rpcbind
 RUN mkdir -p /run/sendsigs.omit.d /iocs /autosave
+
+# start an rsync deamon for debugging
+COPY rsyncd.conf /etc/rsyncd.conf
+RUN rsync --daemon
 
 ENTRYPOINT ["/bin/bash", "-c", "bash startup.sh && sleep infinity"]
