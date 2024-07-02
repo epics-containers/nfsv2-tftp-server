@@ -1,4 +1,4 @@
-FROM debian:11.3
+FROM debian:12.6
 
 CMD ["/bin/bash"]
 RUN apt-get update -y; \
